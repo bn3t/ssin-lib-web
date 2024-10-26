@@ -1,0 +1,36 @@
+---
+// src/components/Footer.astro
+const currentPath = Astro.url.pathname;
+const showDisclaimer = ['/', '/generator'].includes(currentPath);
+---
+
+<footer class="bg-gray-50 border-t">
+  <div class="max-w-7xl mx-auto px-4 py-8">
+    {
+      showDisclaimer && (
+        <div class="mb-4">
+          <p class="text-sm text-gray-600">
+            <span class="font-semibold">Disclaimer: </span>
+            The SSIN generator included in this package is provided for educational and testing purposes only. The
+            generated SSIN numbers are not official and should not be used for any official purpose. Any misuse of this
+            tool to generate SSIN numbers for fraudulent or illegal purposes is strictly prohibited and may lead to
+            legal consequences. The author of this tool assumes no liability for any unauthorized or unlawful use of
+            this tool.
+          </p>
+        </div>
+      )
+    }
+    <div class="text-center text-sm text-gray-500">
+      <span>SSIN Demo Application - Built with </span>
+      <a href="https://astro.build" target="_blank" rel="noopener" class="text-blue-600 hover:underline">Astro</a>
+      <span>, </span>
+      <a href="https://react.dev" target="_blank" rel="noopener" class="text-blue-600 hover:underline">React</a>
+      <span>, </span>
+      <a href="https://ant.design" target="_blank" rel="noopener" class="text-blue-600 hover:underline">Ant Design</a>
+      <span>, and </span>
+      <a href="https://tailwindcss.com" target="_blank" rel="noopener" class="text-blue-600 hover:underline"
+        >Tailwind CSS</a
+      >
+    </div>
+  </div>
+</footer>
