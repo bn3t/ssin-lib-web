@@ -2,11 +2,8 @@
 // src/pages/generator.astro
 import Layout from '../layouts/Layout.astro';
 import GeneratorForm from '../components/GeneratorForm';
-
-// Add necessary imports for dayjs - required by antd DatePicker
-import dayjs from 'dayjs';
 ---
 
 <Layout title="SSIN Generator">
-  <GeneratorForm client:load />
+  <GeneratorForm client:only="react" />
 </Layout>

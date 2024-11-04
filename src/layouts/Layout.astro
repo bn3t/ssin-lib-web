@@ -3,6 +3,7 @@
 import '@fontsource-variable/inter';
 import { GithubOutlined } from '@ant-design/icons';
 import Footer from '../components/Footer.astro';
+import MobileNav from '../components/MobileNav';
 
 interface Props {
   title: string;
@@ -35,6 +36,7 @@ const currentPath = Astro.url.pathname;
             <span class="text-lg font-semibold text-blue-700">SSIN-LIB</span>
           </div>
 
+          {/* Desktop Navigation */}
           <div class="hidden md:flex space-x-4">
             {
               menuItems.map((item) => (
@@ -53,16 +55,19 @@ const currentPath = Astro.url.pathname;
             }
           </div>
 
-          <div class="flex items-center flex-shrink-0">
-            <a
-              href="https://github.com/bn3t/ssin-lib"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-gray-600 hover:text-gray-900"
-            >
-              <GithubOutlined />
-            </a>
+          {/* Mobile Navigation */}
+          <div class="flex md:hidden items-center space-x-4">
+            <MobileNav client:only="react" items={menuItems} currentPath={currentPath} />
           </div>
+          {/* GitHub Link */}
+          <a
+            href="https://github.com/bn3t/ssin-lib"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-gray-600 hover:text-gray-900"
+          >
+            <GithubOutlined />
+          </a>
         </div>
       </nav>
     </header>
