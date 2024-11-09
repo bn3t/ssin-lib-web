@@ -1,47 +1,117 @@
-# Astro Starter Kit: Minimal
+[![Netlify Status](https://api.netlify.com/api/v1/badges/6bccf062-2852-4764-aa50-1f72ee9aed87/deploy-status)](https://app.netlify.com/sites/ssin-lib/deploys)
 
-```sh
-npm create astro@latest -- --template minimal
+# Belgian SSIN Generator and Validator
+
+This project provides a web application for generating and validating Belgian Social Security Identification Numbers (SSIN). It includes both a generator that creates valid SSINs based on input parameters and a validator that checks and analyzes existing SSINs.
+
+## Features
+
+- **SSIN Generator**
+
+  - Generate valid SSINs based on birth date, gender, and order number
+  - Automatic validation of input parameters
+  - Gender-specific order number validation (odd for males, even for females)
+  - Copy formatted or raw SSIN to clipboard
+  - Clear explanation of order number rules
+
+- **SSIN Validator**
+  - Validate existing SSINs
+  - Display detailed SSIN information including:
+    - Birth date
+    - Gender
+    - Formatted and raw number representations
+  - Automatic formatting of input
+  - Comprehensive error messages for invalid SSINs
+
+## Technical Stack
+
+- React
+- TypeScript
+- Ant Design (UI components)
+- [@bn3t/ssin-lib](https://www.npmjs.com/package/@bn3t/ssin-lib) for SSIN calculations
+- Vitest for testing
+- Tailwind CSS for styling
+
+## Installation
+
+1. Clone the repository:
+
+```bash
+git clone git@github.com:bn3t/ssin-lib-web.git
+cd ssin-lib-web
 ```
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/minimal)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/minimal)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/minimal/devcontainer.json)
+2. Install dependencies:
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
-
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+```bash
+npm install
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+3. Start the development server:
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+```bash
+npm run dev
+```
 
-Any static assets, like images, can be placed in the `public/` directory.
+## Testing
 
-## 🧞 Commands
+The project includes comprehensive test coverage for both the generator and validator components. Run the tests using:
 
-All commands are run from the root of the project, from a terminal:
+```bash
+npm test
+```
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+Test files can be found in:
 
-## 👀 Want to learn more?
+- `src/components/__tests__/GeneratorForm.test.tsx`
+- `src/components/__tests__/ValidatorForm.test.tsx`
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+## Project Structure
+
+```
+src/
+├── components/
+│   ├── GeneratorForm.tsx     # SSIN generator component
+│   ├── ValidatorForm.tsx     # SSIN validator component
+│   ├── MobileNav.tsx         # Mobile navigation component
+│   └── __tests__/           # Component tests
+├── content/
+│   └── config.ts            # Content configuration
+└── test/
+    └── setup.tsx            # Test setup configuration
+```
+
+## SSIN Format
+
+A Belgian SSIN consists of 11 digits in the format: `YY.MM.DD-OOO.CC`
+
+- `YY`: Year of birth (00-99)
+- `MM`: Month of birth (01-12)
+- `DD`: Day of birth (01-31)
+- `OOO`: Order number
+  - Males: Odd numbers (001-997)
+  - Females: Even numbers (002-998)
+- `CC`: Check digits
+
+## License
+
+This project is licensed under the MIT License.
+
+## Contributing
+
+Feel free to contribute by opening issues or submitting pull requests.
+
+## Contact
+
+If you have any questions or feedback, feel free to reach out.
+
+### Note
+
+This library is designed to work with specific formats of SSIN and may not cover all edge cases for every country. Please make sure it fits your use case before using it in a production environment.
+
+## Acknowledgments
+
+- [@bn3t/ssin-lib](https://www.npmjs.com/package/@bn3t/ssin-lib) for SSIN generation and validation
+- [Astro](https://astro.build/) for static site generation and routing
+- [Ant Design](https://ant.design/) for UI components
+- [Tailwind CSS](https://tailwindcss.com/) for styling
