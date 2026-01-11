@@ -59,8 +59,8 @@ function createAboutPageComponent(
       {
         title: frontmatter.title ?? "",
         description: frontmatter.description,
-        children: React.createElement(explanationComponent),
       },
+      React.createElement(explanationComponent),
     );
   };
 }
