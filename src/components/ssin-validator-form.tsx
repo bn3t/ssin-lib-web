@@ -2,6 +2,7 @@
 
 import { Gender, SSIN, SSINValidatorHelper, Type } from "@bn3t/ssin-lib";
 import { AlertCircle, CheckCircle2, XCircle } from "lucide-react";
+import posthog from "posthog-js";
 import { useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
@@ -36,6 +37,12 @@ export function SSINValidatorForm() {
         isValid: false,
         message: "SSIN must contain exactly 11 digits",
       });
+
+      // PostHog: Track invalid validation - wrong length
+      posthog.capture("ssin_validated", {
+        is_valid: false,
+        failure_reason: "wrong_length",
+      });
       return;
     }
 
@@ -43,6 +50,12 @@ export function SSINValidatorForm() {
       setValidationResult({
         isValid: false,
         message: "Invalid SSIN - checksum does not match",
+      });
+
+      // PostHog: Track invalid validation - checksum mismatch
+      posthog.capture("ssin_validated", {
+        is_valid: false,
+        failure_reason: "checksum_mismatch",
       });
       return;
     }
@@ -52,23 +65,40 @@ export function SSINValidatorForm() {
       const birthdate = ssinObj.getBirthdate();
       const gender = ssinObj.getGender();
 
+      const ssinType = formatType(ssinObj.getType());
+      const ssinGender = formatGender(gender);
+
       setValidationResult({
         isValid: true,
         message: "Valid SSIN number",
         parsed: {
           formattedSsin: ssinObj.getFormattedSSIN(),
           birthdate: birthdate?.toString() ?? null,
-          gender: formatGender(gender),
+          gender: ssinGender,
           orderNumber: ssinObj.getOrderNumber(),
           controlNumber: ssinObj.getControlNumber(),
-          type: formatType(ssinObj.getType()),
+          type: ssinType,
         },
       });
-    } catch {
+
+      // PostHog: Track successful validation
+      posthog.capture("ssin_validated", {
+        is_valid: true,
+        ssin_type: ssinType.toLowerCase(),
+        gender: ssinGender.toLowerCase(),
+      });
+    } catch (error) {
       setValidationResult({
         isValid: false,
         message: "Error parsing SSIN",
       });
+
+      // PostHog: Track validation parsing error
+      posthog.capture("ssin_validated", {
+        is_valid: false,
+        failure_reason: "parsing_error",
+      });
+      posthog.captureException(error);
     }
   };
 

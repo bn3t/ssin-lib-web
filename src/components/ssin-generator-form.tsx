@@ -9,6 +9,7 @@ import {
 } from "@bn3t/ssin-lib";
 import { format } from "date-fns";
 import { AlertCircle, CalendarIcon, CheckCircle2, Copy } from "lucide-react";
+import posthog from "posthog-js";
 import { useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
@@ -58,8 +59,17 @@ export function SSINGeneratorForm() {
       const formattedSsin = SSINExtractorHelper.format(ssinString);
       setGeneratedSSIN(formattedSsin);
       setCopied(false);
+
+      // PostHog: Track successful SSIN generation
+      posthog.capture("ssin_generated", {
+        gender: gender,
+        has_custom_order_number: !!orderNumber,
+        birth_year: year,
+      });
     } catch (error) {
       console.error("Error generating SSIN:", error);
+      // PostHog: Track generation errors
+      posthog.captureException(error);
     }
   };
 
@@ -67,6 +77,29 @@ export function SSINGeneratorForm() {
     navigator.clipboard.writeText(generatedSSIN);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+
+    // PostHog: Track SSIN copy to clipboard
+    posthog.capture("ssin_generation_copy");
+  };
+
+  const handleGenderSelect = (selectedGender: "male" | "female") => {
+    setGender(selectedGender);
+
+    // PostHog: Track gender selection
+    posthog.capture("gender_selected", {
+      gender: selectedGender,
+    });
+  };
+
+  const handleBirthDateSelect = (date: Date | undefined) => {
+    setBirthDate(date);
+
+    // PostHog: Track birth date selection
+    if (date) {
+      posthog.capture("birth_date_selected", {
+        birth_year: date.getFullYear(),
+      });
+    }
   };
 
   return (
@@ -92,7 +125,7 @@ export function SSINGeneratorForm() {
                 <Calendar
                   mode="single"
                   selected={birthDate}
-                  onSelect={setBirthDate}
+                  onSelect={handleBirthDateSelect}
                   captionLayout="dropdown"
                   fromYear={1900}
                   toYear={2100}
@@ -107,7 +140,7 @@ export function SSINGeneratorForm() {
               <Button
                 type="button"
                 variant={gender === "male" ? "default" : "outline"}
-                onClick={() => setGender("male")}
+                onClick={() => handleGenderSelect("male")}
                 className="h-auto py-4"
               >
                 <div>
@@ -118,7 +151,7 @@ export function SSINGeneratorForm() {
               <Button
                 type="button"
                 variant={gender === "female" ? "default" : "outline"}
-                onClick={() => setGender("female")}
+                onClick={() => handleGenderSelect("female")}
                 className="h-auto py-4"
               >
                 <div>

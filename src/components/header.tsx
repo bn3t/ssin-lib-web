@@ -3,8 +3,10 @@
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import posthog from "posthog-js";
 import { useState } from "react";
 
+import { TrackedLink } from "@/components/tracked-link";
 import { Button } from "@/components/ui/button";
 
 const navItems = [
@@ -19,6 +21,21 @@ export function Header() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  const handleGitHubClick = () => {
+    posthog.capture("github_link_clicked", {
+      source: "header",
+    });
+  };
+
+  const handleMobileMenuToggle = () => {
+    const newState = !mobileMenuOpen;
+    setMobileMenuOpen(newState);
+
+    posthog.capture("mobile_menu_toggled", {
+      action: newState ? "opened" : "closed",
+    });
+  };
+
   return (
     <header className="border-b border-border sticky top-0 bg-background/80 backdrop-blur-sm z-50">
       <div className="container mx-auto px-4 py-4">
@@ -31,14 +48,19 @@ export function Header() {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-1">
             {navItems.map((item) => (
-              <Link key={item.href} href={item.href}>
+              <TrackedLink
+                key={item.href}
+                href={item.href}
+                eventName="navigation_clicked"
+                eventProperties={{ label: item.label, source: "header" }}
+              >
                 <Button
                   variant={pathname === item.href ? "secondary" : "ghost"}
                   className="text-sm"
                 >
                   {item.label}
                 </Button>
-              </Link>
+              </TrackedLink>
             ))}
             <a
               href="https://github.com/bn3t/ssin-lib"
@@ -46,6 +68,7 @@ export function Header() {
               rel="noopener noreferrer"
               className="ml-2 text-muted-foreground hover:text-foreground transition-colors p-2"
               aria-label="GitHub Repository"
+              onClick={handleGitHubClick}
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                 <path
@@ -60,7 +83,7 @@ export function Header() {
           {/* Mobile Menu Button */}
           <button
             className="md:hidden p-2 text-muted-foreground hover:text-foreground"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            onClick={handleMobileMenuToggle}
             aria-label="Toggle menu"
           >
             {mobileMenuOpen ? (
@@ -76,9 +99,11 @@ export function Header() {
           <div className="md:hidden pt-4 pb-2 border-t border-border mt-4">
             <div className="flex flex-col gap-1">
               {navItems.map((item) => (
-                <Link
+                <TrackedLink
                   key={item.href}
                   href={item.href}
+                  eventName="navigation_clicked"
+                  eventProperties={{ label: item.label, source: "header" }}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <Button
@@ -87,13 +112,14 @@ export function Header() {
                   >
                     {item.label}
                   </Button>
-                </Link>
+                </TrackedLink>
               ))}
               <a
                 href="https://github.com/bn3t/ssin-lib"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 px-4 py-2 text-muted-foreground hover:text-foreground transition-colors"
+                onClick={handleGitHubClick}
               >
                 <svg
                   className="w-5 h-5"

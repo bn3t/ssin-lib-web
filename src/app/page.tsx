@@ -1,6 +1,6 @@
 import { ArrowRight, CheckCircle2, Shield, Sparkles } from "lucide-react";
-import Link from "next/link";
 
+import { TrackedLink } from "@/components/tracked-link";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
@@ -22,13 +22,21 @@ export default function HomePage() {
             Belgian Social Security Identification Numbers (SSIN) with ease.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4">
-            <Link href="/validator">
+            <TrackedLink
+              href="/validator"
+              eventName="cta_clicked"
+              eventProperties={{ label: "Validate SSIN", source: "home_hero" }}
+            >
               <Button size="lg" className="gap-2">
                 Validate SSIN
                 <ArrowRight className="w-4 h-4" />
               </Button>
-            </Link>
-            <Link href="/generator">
+            </TrackedLink>
+            <TrackedLink
+              href="/generator"
+              eventName="cta_clicked"
+              eventProperties={{ label: "Generate SSIN", source: "home_hero" }}
+            >
               <Button
                 size="lg"
                 variant="outline"
@@ -36,7 +44,7 @@ export default function HomePage() {
               >
                 Generate SSIN
               </Button>
-            </Link>
+            </TrackedLink>
           </div>
         </div>
       </section>
